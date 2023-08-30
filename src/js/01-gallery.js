@@ -4,17 +4,22 @@
 
 // Реалізація делегування на ul.gallery і отримання url великого зображення.
 
-// Підключення скрипту і стилів бібліотеки модального вікна basicLightbox. Використовуй CDN сервіс jsdelivr і додай у проект посилання на мініфіковані(.min) файли бібліотеки.
+// Підключення скрипту і стилів бібліотеки модального вікна basicLightbox. Використовуй CDN сервіс jsdelivr і додай у проект посилання на мініфіковані(.min) 
+// файли бібліотеки.
 
 // Відкриття модального вікна по кліку на елементі галереї.Для цього ознайомся з документацією і прикладами.
 
-// Заміна значення атрибута src елемента < img > в модальному вікні перед відкриттям.Використовуй готову розмітку модального вікна із зображенням з прикладів бібліотеки basicLightbox.
+// Заміна значення атрибута src елемента < img > в модальному вікні перед відкриттям.Використовуй готову розмітку модального вікна із зображенням з
+// прикладів бібліотеки basicLightbox.
     
-//     Посилання на оригінальне зображення повинно зберігатися в data-атрибуті source на елементі <img>, і вказуватися в href посилання. Не додавай інші HTML теги або CSS класи, крім тих, що містяться в цьому шаблоні.
+//     Посилання на оригінальне зображення повинно зберігатися в data-атрибуті source на елементі <img>, і вказуватися в href посилання. Не додавай інші 
+// HTML теги або CSS класи, крім тих, що містяться в цьому шаблоні.
 
-//     Зверни увагу на те, що зображення обгорнуте посиланням, отже по кліку за замовчуванням користувач буде перенаправлений на іншу сторінку.Заборони цю поведінку за замовчуванням.
+//     Зверни увагу на те, що зображення обгорнуте посиланням, отже по кліку за замовчуванням користувач буде перенаправлений на іншу сторінку.Заборони 
+// цю поведінку за замовчуванням.
     
-//     Додай закриття модального вікна після натискання клавіші Escape. Зроби так, щоб прослуховування клавіатури було тільки доти, доки відкрите модальне вікно. Бібліотека basicLightbox містить метод для програмного закриття модального вікна.
+//     Додай закриття модального вікна після натискання клавіші Escape. Зроби так, щоб прослуховування клавіатури було тільки доти, доки відкрите модальне 
+// вікно.Бібліотека basicLightbox містить метод для програмного закриття модального вікна.
 
 
 
@@ -26,8 +31,9 @@ console.log(galleryItems);
 
 
 const ulEl = document.querySelector(".gallery");
-const liEl = document.querySelector(".gallery__item"); // li 
-const imgEl = document.querySelector(".gallery__image"); /// елемент фото
+
+//const liEl = document.querySelector(".gallery__item"); // li
+
 
 function renderGalleryItems(galleryItems) {
     const markup = galleryItems
@@ -36,9 +42,9 @@ function renderGalleryItems(galleryItems) {
   <a class="gallery__link" href="large-image.jpg">
     <img
       class="gallery__image"
-      src= ${preview}
-      data-source= ${original}
-      alt= ${description}
+      src= "${preview}"
+      data-source = "${original}"
+      alt= "${description}"
     />
   </a>
  </li>`;
@@ -50,27 +56,38 @@ function renderGalleryItems(galleryItems) {
 renderGalleryItems(galleryItems);
 
 
-ulEl.addEventListener('click', onUlElClick);          
+let instance;
 
-function galleryOnClick(event) {
+const onGalleryImgClick = event => {
+    
+    event.preventDefault();
+    console.log(event.target.nodeName);
 
+    if (event.target === event.currentTarget) {
+        return
+    };
+
+    const currentImgLink = event.target.dataset.source;
+
+     instance = basicLightbox.create(`
+    <img src="${currentImgLink}" width="800" height="600">
+ `)
+    
+    
+    document.addEventListener('keydown', closeEsc);
+
+    
+    instance.show()
 }
 
+ulEl.addEventListener('click', onGalleryImgClick);     
 
-
-
-// function showModal() {
-
-//   document.body.classList.add('show-modal');
-// }
-
-// function hiddenModal() {
-//   document.body.classList.remove('show-modal');
-// }
-
-
-
-
+const closeEsc = event => {
+    if (event.code === 'Escape') {
+    document.removeEventListener('keydown', closeEsc);
+    instance.close();
+    } 
+}; 
 
 
 
